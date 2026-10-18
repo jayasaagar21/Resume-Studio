@@ -1,0 +1,6 @@
+# Personal data stays out of the repo: exported libraries and saved copies of the studio.
+*Resume_Library*.json
+*_Resume_Studio.html
+Resume_Studio.html
+.DS_Store
+Thumbs.db

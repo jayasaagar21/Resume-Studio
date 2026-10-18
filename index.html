@@ -1,0 +1,1043 @@
+<!doctype html><html lang="en"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,"Segoe UI",sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>Resume Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap">
+<style id="app-style">
+/* Layout: a sticky library rail (industries, sections of resumes, templates) beside a desk that holds one editable US-Letter sheet. */
+:root{
+  --bg:#e7ebf0; --surface:#f7f9fb; --raised:#ffffff; --ink:#17212c; --muted:#5a6573; --line:#d2d9e1;
+  --accent:#1f4e79; --accent-ink:#ffffff; --accent-soft:#dfe8f2; --warn:#8a5a00; --pill:#17212c; --pill-ink:#f7f9fb;
+  --paper:#ffffff; --paper-ink:#1b1f24;
+  --shadow:0 1px 2px rgba(20,30,45,.08),0 10px 28px rgba(20,30,45,.10);
+  --font-ui:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1319; --surface:#151b23; --raised:#1c242e; --ink:#e3e8ee; --muted:#98a4b3; --line:#2a3440;
+  --accent:#8db7e6; --accent-ink:#0e1a27; --accent-soft:#1d3146; --warn:#f0c46a; --pill:#e3e8ee; --pill-ink:#151b23;
+  --shadow:0 1px 2px rgba(0,0,0,.45),0 12px 32px rgba(0,0,0,.4); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e1319; --surface:#151b23; --raised:#1c242e; --ink:#e3e8ee; --muted:#98a4b3; --line:#2a3440;
+  --accent:#8db7e6; --accent-ink:#0e1a27; --accent-soft:#1d3146; --warn:#f0c46a; --pill:#e3e8ee; --pill-ink:#151b23;
+  --shadow:0 1px 2px rgba(0,0,0,.45),0 12px 32px rgba(0,0,0,.4); color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-ui);font-size:14px}
+.app{display:grid;grid-template-columns:280px minmax(0,1fr);gap:20px;align-items:start;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 40px}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);max-height:calc(100vh - 32px);overflow:auto;
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 14px;display:flex;flex-direction:column;gap:20px;box-sizing:border-box}
+.lbl{font:500 11px/1.3 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.lblrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 6px}
+.lblrow .lbl{margin:0}
+.brand-name{font:600 19px/1.2 var(--font-ui);margin:0}
+.brand-sub{margin:2px 0 0;color:var(--muted);font-size:12.5px}
+.cats{display:grid;gap:4px}
+.cat{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;border:1px solid transparent;background:transparent;border-radius:8px;padding:8px 10px;color:var(--ink);cursor:pointer;font:600 14px var(--font-ui)}
+.cat:hover{border-color:var(--line)}
+.cat[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.cat span:first-child{min-width:0;overflow-wrap:anywhere}
+.count{font:500 11px var(--font-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.roles{display:grid;gap:12px}
+.group{display:grid;gap:2px}
+.group-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 2px 10px}
+.group-name{font-size:12px;color:var(--muted);margin:0;overflow-wrap:anywhere}
+.addlink{border:0;background:transparent;color:var(--accent);font:500 12px var(--font-ui);cursor:pointer;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.addlink:hover{background:var(--accent-soft)}
+.none{font-size:12.5px;color:var(--muted);margin:0 0 0 10px;font-style:italic}
+.rb{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;border:0;background:transparent;border-radius:6px;padding:6px 10px;color:var(--ink);font:400 13.5px var(--font-ui);cursor:pointer}
+.rb:hover{background:var(--accent-soft)}
+.rb[aria-pressed="true"]{background:var(--pill);color:var(--pill-ink)}
+.rb span{min-width:0;overflow-wrap:anywhere}
+.rail-foot{display:grid;gap:6px;border-top:1px solid var(--line);padding-top:14px}
+.hint{color:var(--muted);font-size:12.5px;line-height:1.45;margin:0}
+.main{min-width:0;display:grid;gap:12px}
+.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px}
+.heading{min-width:0}
+.heading h1{font:600 22px/1.2 var(--font-ui);margin:0;text-wrap:balance;overflow-wrap:anywhere}
+.heading .lbl{margin-bottom:3px}
+.act{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.btn{font:500 13px var(--font-ui);border:1px solid var(--line);background:var(--raised);color:var(--ink);border-radius:6px;padding:7px 12px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.warn{border-color:var(--warn);color:var(--warn)}
+.btn.sm{padding:5px 9px;font-size:12.5px}
+.btn:disabled{opacity:.5;cursor:default}
+.lbl.inline{margin:0 2px 0 0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--raised)}
+.seg button{border:0;background:transparent;padding:7px 14px;color:var(--muted);font:500 13px var(--font-ui);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.chip{font:500 12px var(--font-mono);padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.chip.dirty{color:var(--warn);border-color:var(--warn)}
+.fields,.panel{display:grid;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}
+.fields{grid-template-columns:repeat(4,minmax(0,1fr))}
+.panel{border-color:var(--accent);padding:14px;gap:12px}
+.panel .lbl{margin:0}
+.pgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.fields label,.panel label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);min-width:0}
+.fields input,.panel input,.panel select,.panel textarea{font:14px var(--font-ui);padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--raised);color:var(--ink);min-width:0}
+.panel textarea{min-height:180px;resize:vertical;font:13px/1.45 var(--font-mono)}
+.err{color:var(--warn);font-size:13px;margin:0}
+.org-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.org-col{display:grid;gap:6px;align-content:start;min-width:0}
+.org-h{font:600 13px var(--font-ui);margin:0}
+.org-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;align-items:center}
+.org-add{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;margin-top:4px}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.desk{overflow-x:auto;padding-block:4px 24px}
+.app .sheet{margin-inline:auto;width:8.5in;max-width:100%;min-height:11in;box-sizing:border-box;padding:.6in .65in;
+  background-color:var(--paper);color:var(--paper-ink);box-shadow:var(--shadow);border-radius:2px;outline:none;
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--pg,11in) - 1px),rgba(31,78,121,.3) calc(var(--pg,11in) - 1px),rgba(31,78,121,.3) var(--pg,11in))}
+.app .sheet:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.app .sheet .fld{border-bottom:1px dotted #1f4e79}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:28px 22px;display:grid;gap:10px;justify-items:start;max-width:62ch}
+.empty h2{font:600 18px/1.3 var(--font-ui);margin:0}
+.empty p{margin:0;color:var(--muted);line-height:1.5}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--pill);color:var(--pill-ink);padding:9px 14px;border-radius:8px;font-size:13px;max-width:calc(100% - 32px);box-shadow:var(--shadow);z-index:5}
+@media (max-width:900px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static;max-height:none}
+  .cats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .roles,.fields,.pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:520px){
+  .roles,.fields,.pgrid,.org-grid{grid-template-columns:minmax(0,1fr)}
+  .app .sheet{padding:22px 18px;min-height:0}
+}
+@media print{
+  @page{size:letter;margin:.55in}
+  body{background:#fff}
+  body *{visibility:hidden}
+  .app .sheet,.app .sheet *{visibility:visible}
+  .app .sheet{position:absolute;left:0;top:0;width:100%;max-width:none;min-height:0;padding:0;box-shadow:none;background:#fff;background-image:none}
+  .app .sheet .fld{border:0}
+}
+</style>
+<div id="app"></div>
+<script type="application/json" id="resume-state">{"v":3}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script id="app-script">
+/* Resume Studio: an editable resume and cover-letter library in one HTML file. MIT License. */
+(function(){
+'use strict';
+
+var TITLE=document.title||'Resume Studio';
+var LIB_FORMAT='resume-studio-library';
+var DEFAULT_CATS=[{id:'re',name:'Real Estate'},{id:'ec',name:'E-commerce'},{id:'tel',name:'Telecom'},{id:'gen',name:'General'}];
+var DEFAULT_SECTIONS=['Analysis','Product','Delivery','Marketing','Other'];
+var BULLET='[What you worked on and accomplished. This resulted in what.]';
+
+/* ---------- markup helpers ---------- */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function roleLine(left,date){return '<p class="r-role"><span class="r-rt">'+left+'</span><span class="r-date">'+esc(date)+'</span></p>';}
+function list(items){return '<ul>'+items.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul>';}
+
+var DEFAULT_TEMPLATES={
+  resume:'<h1>Your Name</h1><p class="r-contact">City, State | (555) 555-0100 | you@example.com | linkedin.com/in/yourname | yourwebsite.com</p>'+
+    '<h2>Summary</h2><p>[Write 3 to 4 lines: years of experience, the industry, two results with numbers, and what sets you apart for this role.]</p>'+
+    '<h2>Core Skills</h2>'+list(['<b>[Skill area]:</b> [skills from the job description that you have used]','<b>[Skill area]:</b> [skills from the job description that you have used]','<b>[Skill area]:</b> [skills from the job description that you have used]'])+
+    '<h2>Professional Experience</h2>'+
+    roleLine('<b>[Role title]</b> | [Company], [Location]','[Mon YYYY – Mon YYYY]')+list([BULLET,BULLET])+
+    roleLine('<b>[Role title]</b> | [Company], [Location]','[Mon YYYY – Mon YYYY]')+list([BULLET,BULLET])+
+    '<h2>Projects</h2>'+list(['<b>[Project name].</b> [What you built. This resulted in what.]'])+
+    '<h2>Education &amp; Certifications</h2>'+roleLine('<b>[Degree]</b> | [School]','[Year]')+'<p><b>Certifications:</b> [Certification · Certification]</p>'+
+    '<h2>Tools</h2><p>[Tools named in the job description that you have used]</p>',
+  letter:'<h1>Your Name</h1><p class="r-contact">City, State | (555) 555-0100 | you@example.com | linkedin.com/in/yourname</p>'+
+    '<p>{date}</p><p>{manager}<br>{company}</p><p>Dear {manager},</p>'+
+    '<p>I’m applying for the {role} role at {company}. [One sentence on why this industry, with your strongest relevant result.]</p>'+
+    '<p>[Your strongest result for this role: what you did, the number it moved, and how.]</p>'+
+    '<p>[A second result that matches the job description.]</p>'+
+    '<p>[Why {company}: a product, a recent launch or a customer problem you want to work on.]</p>'+
+    '<p>I’d welcome a conversation about how I can help {company}.</p>'+
+    '<p>Sincerely,<br>Your Name</p>',
+  letterByCat:{}
+};
+
+/* Turns pasted resume text into the sheet's structure: name, contact, headings, role lines, bullets. */
+var DATE_RANGE=/((?:[A-Z][a-z]{2,8}\.?\s+)?\d{4}\s*[–—-]\s*(?:Present|Current|Now|(?:[A-Z][a-z]{2,8}\.?\s+)?\d{4}))\s*$/i;
+function pasteToHTML(text){
+  var lines=String(text).replace(/\r/g,'').split('\n').map(function(s){return s.replace(/\s+/g,' ').trim();});
+  var out=[], items=[], seenName=false;
+  function flush(){if(items.length){out.push(list(items.map(esc)));items=[];}}
+  lines.forEach(function(l){
+    if(!l){flush();return;}
+    if(!seenName){seenName=true;out.push('<h1>'+esc(l)+'</h1>');return;}
+    if(out.length===1&&!items.length&&/@|\||\(\d{3}\)|\+\d|linkedin/i.test(l)){out.push('<p class="r-contact">'+esc(l)+'</p>');return;}
+    var b=l.match(/^[•▪●◦·*–-]\s*(.+)$/);
+    if(b){items.push(b[1]);return;}
+    flush();
+    var letters=l.replace(/[^A-Za-z]/g,'');
+    if(l.length<=48&&letters.length>=4&&(letters===letters.toUpperCase()||/:$/.test(l))){out.push('<h2>'+esc(l.replace(/:$/,''))+'</h2>');return;}
+    var d=l.length<180&&l.match(DATE_RANGE);
+    if(d){
+      var left=l.slice(0,d.index).replace(/[\s|,–—-]+$/,''), parts=left.split(/\s*\|\s*/);
+      out.push(roleLine('<b>'+esc(parts[0])+'</b>'+(parts.length>1?' | '+esc(parts.slice(1).join(' | ')):''),d[1]));
+      return;
+    }
+    out.push('<p>'+esc(l)+'</p>');
+  });
+  flush();
+  return out.join('');
+}
+
+/* Builds a sheet from an extension-style variant ({label, summary, roles[], education[], ...}). */
+function variantToHTML(v){
+  var c=v.contact||{};
+  var contact=[c.location,c.phone,c.email,c.linkedin,c.portfolio].filter(Boolean).join(' | ')||c.raw||'';
+  var h='<h1>'+esc(v.name||'Your Name')+'</h1>'+(contact?'<p class="r-contact">'+esc(contact)+'</p>':'');
+  if(v.summary) h+='<h2>Summary</h2><p>'+esc(v.summary)+'</p>';
+  var comp=v.competencies||{};
+  if(Object.keys(comp).length) h+='<h2>Core Skills</h2>'+list(Object.keys(comp).map(function(k){return '<b>'+esc(k)+':</b> '+esc(comp[k]);}));
+  function roles(sec){return (v.roles||[]).filter(function(r){return (r.section||'experience')===sec;}).map(function(r){
+    return roleLine('<b>'+esc(r.title||'')+'</b> | '+esc([r.org,r.loc].filter(Boolean).join(', ')),r.date||'')+list((r.bullets||[]).map(function(b){return esc(typeof b==='string'?b:(b.t||''));}));
+  }).join('');}
+  var ex=roles('experience'), co=roles('consulting');
+  if(ex) h+='<h2>Professional Experience</h2>'+ex;
+  if(co) h+='<h2>Consulting Engagements</h2>'+co;
+  if((v.projects||[]).length) h+='<h2>Projects</h2>'+list(v.projects.map(function(p){return '<b>'+esc(p.n||'')+'.</b> '+esc(p.d||'');}));
+  if((v.education||[]).length||(v.certs||[]).length){
+    h+='<h2>Education &amp; Certifications</h2>';
+    (v.education||[]).forEach(function(e){h+=roleLine('<b>'+esc(e.deg||'')+'</b> | '+esc(e.school||''),e.date||'')+(e.extra?'<p class="r-note">'+esc(e.extra)+'</p>':'');});
+    if((v.certs||[]).length) h+='<p><b>Certifications:</b> '+esc(v.certs.join(' · '))+'</p>';
+  }
+  var tk=v.toolkit||{}, tools=[];
+  Object.keys(tk).forEach(function(k){tools=tools.concat(tk[k]||[]);});
+  if(tools.length) h+='<h2>Tools</h2><p>'+esc(tools.join(' · '))+'</p>';
+  return h;
+}
+
+var SHEET_CSS=
+'.sheet{font-family:"Source Sans 3",Calibri,"Helvetica Neue",Arial,sans-serif;font-size:10pt;line-height:1.38;color:#1b1f24;background:#fff;text-align:left}'+
+'.sheet h1{font-family:"Source Serif 4",Georgia,serif;font-size:21pt;font-weight:600;line-height:1.1;margin:0 0 3pt;letter-spacing:.2px;color:#14202c}'+
+'.sheet .r-contact{margin:0 0 6pt;color:#3b4552;font-size:9pt}'+
+'.sheet h2{font-family:"Source Serif 4",Georgia,serif;font-size:10.5pt;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#1f4e79;border-bottom:1px solid #1f4e79;padding-bottom:2pt;margin:11pt 0 5pt}'+
+'.sheet h3{font-size:10pt;font-weight:700;margin:7pt 0 2pt}'+
+'.sheet p{margin:0 0 4pt}'+
+'.sheet .r-role{display:flex;justify-content:space-between;align-items:baseline;gap:12pt;margin:7pt 0 2pt}'+
+'.sheet .r-rt{min-width:0}'+
+'.sheet .r-date{white-space:nowrap;color:#3b4552;font-variant-numeric:tabular-nums}'+
+'.sheet ul{margin:0 0 4pt;padding-left:13pt}'+
+'.sheet li{margin:0 0 2.5pt}'+
+'.sheet .r-note{font-size:9pt;color:#3b4552}'+
+'.sheet .todo{background:#fff1b8}'+
+'.sheet.letter{font-size:10.5pt;line-height:1.5}'+
+'.sheet.letter p{margin:0 0 9pt}'+
+'.sheet.letter h1{margin-bottom:3pt}'+
+'.sheet.letter .r-contact{margin-bottom:18pt}';
+
+/* ---------- state ---------- */
+var FONT_LINK='<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap">';
+var LIBS='<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></'+'script>\n<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></'+'script>';
+var RESET=':root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,"Segoe UI",sans-serif}img{max-width:100%}[hidden]{display:none!important}';
+var DRAFT_KEY='rs-draft-v3', VIEW_KEY='rs-view-v3';
+
+function lsGet(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function lsDel(k){try{localStorage.removeItem(k);}catch(e){}}
+function ssGet(k){try{return sessionStorage.getItem(k);}catch(e){return null;}}
+function ssSet(k,v){try{sessionStorage.setItem(k,v);}catch(e){}}
+function ssDel(k){try{sessionStorage.removeItem(k);}catch(e){}}
+function clone(o){return JSON.parse(JSON.stringify(o));}
+
+function normalize(s){
+  s=s&&typeof s==='object'?s:{};
+  var cats=Array.isArray(s.cats)&&s.cats.length?s.cats.filter(function(c){return c&&c.id&&c.name;}).map(function(c){return {id:String(c.id),name:String(c.name)};}):clone(DEFAULT_CATS);
+  var sections=Array.isArray(s.sections)&&s.sections.length?s.sections.map(String):DEFAULT_SECTIONS.slice();
+  var t=s.templates&&typeof s.templates==='object'?s.templates:{};
+  return {v:3,cats:cats,sections:sections,
+    templates:{resume:t.resume||DEFAULT_TEMPLATES.resume,letter:t.letter||DEFAULT_TEMPLATES.letter,letterByCat:t.letterByCat&&typeof t.letterByCat==='object'?t.letterByCat:{}},
+    resumes:Array.isArray(s.resumes)?s.resumes.filter(function(r){return r&&r.id;}):[],
+    edits:s.edits&&typeof s.edits==='object'?s.edits:{},
+    fields:s.fields&&typeof s.fields==='object'?s.fields:{}};
+}
+function readEmbedded(){try{return normalize(JSON.parse(document.getElementById('resume-state').textContent));}catch(e){return normalize(null);}}
+function snap(s){return JSON.stringify([s.cats,s.sections,s.templates,s.resumes,s.edits,s.fields]);}
+function hash(str){var h=5381;for(var i=0;i<str.length;i++){h=((h<<5)+h+str.charCodeAt(i))|0;}return String(h>>>0);}
+
+var embedded=readEmbedded();
+var savedSnap=snap(embedded);
+var baseHash=hash(savedSnap);
+var state=clone(embedded);
+var restored=false;
+(function(){
+  var d=lsGet(DRAFT_KEY);
+  var force=ssGet('rs-force-draft')==='1'; ssDel('rs-force-draft');
+  if(d&&d.state&&(d.base===baseHash||force)&&snap(normalize(d.state))!==savedSnap){state=normalize(d.state);restored=true;}
+  else if(d){lsDel(DRAFT_KEY);}
+})();
+
+function catOf(id){return state.cats.filter(function(c){return c.id===id;})[0]||state.cats[0];}
+function byId(id){return state.resumes.filter(function(r){return r.id===id;})[0]||null;}
+function resumesIn(cat){return state.resumes.filter(function(r){return r.cat===cat;});}
+function newId(p){return (p||'r')+Date.now().toString(36)+Math.floor(Math.random()*46656).toString(36);}
+function ownerName(){var d=document.createElement('div');d.innerHTML=state.templates.resume;var h=d.querySelector('h1');return h?h.textContent.trim():'Resume';}
+
+var view=Object.assign({cat:null,id:null,doc:'resume',tpl:null},lsGet(VIEW_KEY)||{});
+function current(){var r=byId(view.id);return r&&r.cat===view.cat?r:null;}
+function ensureSelection(){
+  if(!state.cats.some(function(c){return c.id===view.cat;})) view.cat=state.cats[0].id;
+  if(view.doc!=='letter') view.doc='resume';
+  if(view.tpl&&!/^(resume|letter|letter:.+)$/.test(view.tpl)) view.tpl=null;
+  if(view.tpl&&view.tpl.indexOf('letter:')===0&&!state.cats.some(function(c){return 'letter:'+c.id===view.tpl;})) view.tpl=null;
+  if(!view.tpl&&!current()){var first=resumesIn(view.cat)[0];view.id=first?first.id:null;}
+}
+ensureSelection();
+
+/* ---------- runtime capabilities ---------- */
+var inArtifact=!!(window.claude&&typeof window.claude.use==='function');
+var readOnly=false;
+var artReady=inArtifact?Promise.resolve(window.claude.use('artifact')).catch(function(){return null;}):Promise.resolve(null);
+var dlReady=inArtifact?Promise.resolve(window.claude.use('downloads')).catch(function(){return null;}):Promise.resolve(null);
+
+/* ---------- sanitizing edited markup ---------- */
+var OK_TAGS={DIV:1,P:1,SPAN:1,B:1,STRONG:1,I:1,EM:1,U:1,UL:1,OL:1,LI:1,H1:1,H2:1,H3:1,BR:1};
+var DROP_TAGS={SCRIPT:1,STYLE:1,IFRAME:1,OBJECT:1,EMBED:1,LINK:1,META:1,TEMPLATE:1,SVG:1,MATH:1,IMG:1,VIDEO:1,AUDIO:1,FORM:1,INPUT:1,BUTTON:1,TEXTAREA:1,SELECT:1};
+function sanitize(html){
+  var t=document.createElement('template'); t.innerHTML=String(html||'');
+  (function clean(n){
+    Array.prototype.slice.call(n.childNodes).forEach(function(c){
+      if(c.nodeType===8){c.remove();return;}
+      if(c.nodeType!==1) return;
+      var tag=c.tagName.toUpperCase();
+      if(DROP_TAGS[tag]){c.remove();return;}
+      clean(c);
+      if(!OK_TAGS[tag]){while(c.firstChild) c.parentNode.insertBefore(c.firstChild,c); c.remove(); return;}
+      Array.prototype.slice.call(c.attributes).forEach(function(a){if(a.name!=='class'&&a.name!=='data-f') c.removeAttribute(a.name);});
+    });
+  })(t.content);
+  return t.innerHTML;
+}
+function letterFromTemplate(cat){
+  var t=sanitize(state.templates.letterByCat[cat]||state.templates.letter);
+  return t.replace(/\{(company|manager|role|date)\}/g,'<span data-f="$1"></span>');
+}
+
+/* ---------- UI shell ---------- */
+var app=document.getElementById('app');
+app.className='app';
+app.innerHTML=
+'<aside class="rail" aria-label="Resume library">'+
+  '<div><p class="lbl" id="owner"></p><p class="brand-name">Resume Studio</p><p class="brand-sub" id="brand-sub"></p></div>'+
+  '<section><div class="lblrow"><p class="lbl" id="l-ind">Industries</p><button type="button" class="addlink" data-organize="cat">Edit</button></div><div class="cats" id="cats" role="group" aria-labelledby="l-ind"></div></section>'+
+  '<section><div class="lblrow"><p class="lbl" id="l-role">Sections</p><button type="button" class="addlink" data-organize="sec">Edit</button></div><div class="roles" id="roles" aria-labelledby="l-role"></div></section>'+
+  '<section><p class="lbl">Templates</p><div class="group" id="tpls"></div></section>'+
+  '<section class="rail-foot">'+
+    '<p class="lbl">Library file</p>'+
+    '<button class="btn" id="lib-export" type="button">Export library (.json)</button>'+
+    '<button class="btn" id="lib-import" type="button">Import library</button>'+
+    '<input type="file" id="import-file" accept=".json,application/json" hidden>'+
+    '<p class="hint">One file holds every resume, cover letter, template, industry and section. Import it here or in the extension.</p>'+
+    '<button class="btn" id="dl-all" type="button">Download whole studio (.html)</button>'+
+  '</section>'+
+'</aside>'+
+'<main class="main">'+
+  '<form class="panel" id="panel" hidden novalidate>'+
+    '<p class="lbl" id="panel-title">New resume</p>'+
+    '<div class="pgrid">'+
+      '<label for="n-name">Resume name<input id="n-name" type="text" autocomplete="off" maxlength="80" placeholder="e.g. Product Manager"></label>'+
+      '<label for="n-cat">Industry<select id="n-cat"></select></label>'+
+      '<label for="n-group">Section<select id="n-group"></select></label>'+
+      '<label for="n-base" id="base-wrap">Start from<select id="n-base"></select></label>'+
+    '</div>'+
+    '<label for="n-paste" id="paste-wrap" hidden>Paste your resume text<textarea id="n-paste" placeholder="Paste plain text. Headings in CAPITALS, bullets starting with • or -, and lines ending in a date range like Jun 2023 – Jul 2024 are recognized."></textarea></label>'+
+    '<p class="err" id="n-err" role="alert" hidden></p>'+
+    '<div class="act"><button class="btn primary" type="submit" id="n-ok">Create resume</button><button class="btn" type="button" id="n-cancel">Cancel</button><button class="btn warn" type="button" id="n-del" hidden>Delete this resume</button></div>'+
+  '</form>'+
+  '<div class="panel" id="org" hidden>'+
+    '<p class="lbl">Industries and sections</p>'+
+    '<div class="org-grid">'+
+      '<div class="org-col"><p class="org-h">Industries</p><p class="hint">Main categories. Each one has its own resumes and can have its own cover letter.</p><div class="org-col" id="org-cats"></div>'+
+        '<div class="org-add"><input id="add-cat" type="text" autocomplete="off" maxlength="40" placeholder="New industry, e.g. Healthcare" aria-label="New industry name"><button class="btn" id="add-cat-btn" type="button">Add industry</button></div></div>'+
+      '<div class="org-col"><p class="org-h">Sections</p><p class="hint">Sub-categories shown inside every industry, such as role families.</p><div class="org-col" id="org-secs"></div>'+
+        '<div class="org-add"><input id="add-sec" type="text" autocomplete="off" maxlength="40" placeholder="New section, e.g. Data Science" aria-label="New section name"><button class="btn" id="add-sec-btn" type="button">Add section</button></div></div>'+
+    '</div>'+
+    '<p class="err" id="org-err" role="alert" hidden></p>'+
+    '<div class="act"><button class="btn primary" id="org-done" type="button">Done</button></div>'+
+  '</div>'+
+  '<div id="empty" class="empty" hidden><h2 id="empty-title"></h2><p>Add a resume to any section. Start from your blank template, paste an existing resume, or copy one you already made.</p><button class="btn primary" id="empty-add" type="button">Add a resume</button></div>'+
+  '<div id="doc" class="main" hidden>'+
+    '<div class="bar"><div class="heading"><p class="lbl" id="crumb"></p><h1 id="doc-title"></h1></div>'+
+      '<div class="seg" id="seg" role="group" aria-label="Document"><button type="button" data-doc="resume">Resume</button><button type="button" data-doc="letter">Cover letter</button></div></div>'+
+    '<div class="bar"><div class="act"><button class="btn primary" id="save" type="button">Save changes</button><button class="btn" id="edit-details" type="button">Edit details</button><button class="btn" id="reset" type="button">Reset</button><span class="chip" id="status" aria-live="polite"></span></div>'+
+      '<div class="act"><span class="lbl inline">Download</span><button class="btn" id="dl-pdf" type="button">PDF</button><button class="btn" id="dl-docx" type="button">Word</button><button class="btn" id="dl-html" type="button">HTML</button><button class="btn" id="print" type="button" hidden>Print</button></div></div>'+
+    '<div class="fields" id="fields" hidden>'+
+      '<label for="f-company">Company<input id="f-company" type="text" autocomplete="off" placeholder="Company name"></label>'+
+      '<label for="f-manager">Hiring manager<input id="f-manager" type="text" autocomplete="off" placeholder="Hiring Manager"></label>'+
+      '<label for="f-role">Role title<input id="f-role" type="text" autocomplete="off"></label>'+
+      '<label for="f-date">Date<input id="f-date" type="text" autocomplete="off"></label>'+
+    '</div>'+
+    '<div class="tools" id="tools"><span class="lbl inline">Insert</span>'+
+      '<button class="btn sm" type="button" data-insert="section">Section</button>'+
+      '<button class="btn sm" type="button" data-insert="entry">Sub-section</button>'+
+      '<button class="btn sm" type="button" data-insert="bullet">Bullet</button>'+
+      '<button class="btn sm" type="button" data-insert="para">Paragraph</button>'+
+      '<button class="btn sm" type="button" data-insert="remove">Remove block</button></div>'+
+    '<div class="meta"><p class="hint" id="hint"></p><span class="chip" id="length"></span></div>'+
+    '<div class="desk"><div class="sheet" id="sheet" contenteditable="true" spellcheck="true" role="textbox" aria-multiline="true" aria-label="Editable document"></div></div>'+
+  '</div>'+
+'</main>'+
+'<div class="toast" id="toast" role="status" hidden></div>';
+
+var sheetStyle=document.createElement('style'); sheetStyle.textContent=SHEET_CSS; document.head.appendChild(sheetStyle);
+var $=function(id){return document.getElementById(id);};
+var sheet=$('sheet');
+
+/* ---------- rendering ---------- */
+function renderRail(){
+  $('owner').textContent=ownerName();
+  $('cats').innerHTML=state.cats.map(function(c){
+    return '<button type="button" class="cat" data-cat="'+esc(c.id)+'" aria-pressed="'+(!view.tpl&&c.id===view.cat)+'"><span>'+esc(c.name)+'</span><span class="count">'+resumesIn(c.id).length+'</span></button>';
+  }).join('')+'<button type="button" class="addlink" data-organize="cat-add">+ Add industry</button>';
+  var mine=resumesIn(view.cat);
+  $('roles').innerHTML=state.sections.map(function(s){
+    var rs=mine.filter(function(r){return r.section===s;});
+    return '<div class="group"><div class="group-head"><p class="group-name">'+esc(s)+'</p><button type="button" class="addlink" data-add="'+esc(s)+'" aria-label="Add a resume to '+esc(s)+'">+ Add</button></div>'+
+      (rs.length?rs.map(function(r){return '<button type="button" class="rb" data-id="'+esc(r.id)+'" aria-pressed="'+(!view.tpl&&r.id===view.id)+'"><span>'+esc(r.name)+'</span></button>';}).join(''):'<p class="none">No resumes yet</p>')+
+    '</div>';
+  }).join('')+'<button type="button" class="addlink" data-organize="sec-add">+ Add section</button>';
+  var cn=catOf(view.cat).name;
+  $('tpls').innerHTML=[['resume','Blank resume'],['letter','Cover letter (all industries)'],['letter:'+view.cat,'Cover letter for '+cn+(state.templates.letterByCat[view.cat]?'':' (uses common)')]].map(function(t){
+    return '<button type="button" class="rb" data-tpl="'+esc(t[0])+'" aria-pressed="'+(view.tpl===t[0])+'"><span>'+esc(t[1])+'</span></button>';
+  }).join('');
+  var total=state.resumes.length;
+  $('brand-sub').textContent=total?(total+' resume'+(total>1?'s':'')+' in '+state.cats.filter(function(c){return resumesIn(c.id).length;}).length+' of '+state.cats.length+' industries'):'Your library is empty. Add your first resume.';
+}
+function today(){try{return new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}catch(e){return '';}}
+function fieldVals(r){
+  var f=state.fields[r.id]||{};
+  return {companyRaw:f.company||'',managerRaw:f.manager||'',company:f.company||'[Company]',manager:f.manager||'Hiring Manager',role:f.role||r.name,date:f.date||today()};
+}
+function applyFields(r){
+  if(view.tpl||view.doc!=='letter') return;
+  var v=fieldVals(r);
+  Array.prototype.forEach.call(sheet.querySelectorAll('[data-f]'),function(s){
+    var n=s.getAttribute('data-f'), val=v[n]!=null?v[n]:'';
+    s.textContent=val; s.contentEditable='false'; s.classList.add('fld'); s.classList.toggle('todo',/^\[/.test(val));
+  });
+}
+function tplLabel(t){if(t==='resume') return 'Blank resume';if(t==='letter') return 'Cover letter (all industries)';return 'Cover letter for '+catOf(t.slice(7)).name;}
+function tplHTML(t){if(t==='resume') return state.templates.resume;if(t==='letter') return state.templates.letter;var c=t.slice(7);return state.templates.letterByCat[c]||state.templates.letter;}
+function renderDoc(){
+  var r=current(), tpl=view.tpl;
+  var showDoc=!!(tpl||r);
+  $('empty').hidden=showDoc; $('doc').hidden=!showDoc;
+  if(!showDoc){$('empty-title').textContent='No resumes in '+catOf(view.cat).name+' yet';return;}
+  $('seg').hidden=!!tpl; $('edit-details').hidden=!!tpl;
+  if(tpl){
+    $('crumb').textContent='Template';
+    $('doc-title').textContent=tplLabel(tpl);
+    $('reset').textContent=tpl.indexOf('letter:')===0?'Use the common letter':'Reset template';
+    $('fields').hidden=true;
+    $('hint').textContent=tpl==='resume'
+      ?'New resumes start from this page. Put your name, contact line, employers and education here once.'
+      :'Write {company}, {manager}, {role} and {date} where the letter should fill them in. Changes apply to letters you have not edited yet.';
+    sheet.innerHTML=sanitize(tplHTML(tpl));
+    sheet.classList.toggle('letter',tpl!=='resume');
+  }else{
+    $('crumb').textContent=catOf(r.cat).name+' · '+r.section+' · '+(view.doc==='resume'?'Resume':'Cover letter');
+    $('doc-title').textContent=r.name;
+    Array.prototype.forEach.call(document.querySelectorAll('#seg button'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-doc')===view.doc));});
+    $('reset').textContent=view.doc==='resume'?'Reset to blank template':'Reset letter';
+    $('fields').hidden=view.doc!=='letter';
+    if(view.doc==='letter'){var v=fieldVals(r);$('f-company').value=v.companyRaw;$('f-manager').value=v.managerRaw;$('f-role').value=v.role;$('f-date').value=v.date;}
+    $('hint').textContent=inArtifact
+      ?'Click the page to edit. Use Insert to add sections, sub-sections and bullets. Save changes keeps your library on this page.'
+      :'Click the page to edit. Use Insert to add sections, sub-sections and bullets. Save changes keeps edits in this browser and downloads an updated copy of this file.';
+    var k=view.doc+':'+r.id;
+    sheet.innerHTML=state.edits[k]?sanitize(state.edits[k]):(view.doc==='resume'?sanitize(state.templates.resume):letterFromTemplate(r.cat));
+    sheet.classList.toggle('letter',view.doc==='letter');
+    applyFields(r);
+  }
+  measure();
+}
+function measure(){
+  if($('doc').hidden) return;
+  var w=sheet.offsetWidth; if(!w) return;
+  var pg=w*11/8.5; sheet.style.setProperty('--pg',pg+'px');
+  var pages=sheet.scrollHeight/pg;
+  var todo=(sheet.textContent.match(/\[[^\[\]\n]{1,200}\]/g)||[]).length;
+  $('length').textContent='≈ '+pages.toFixed(1)+' pages'+(todo?' · '+todo+' placeholder'+(todo>1?'s':'')+' to fill':'');
+}
+function render(){ensureSelection();renderRail();renderDoc();updateStatus();lsSet(VIEW_KEY,view);}
+
+/* ---------- status, toast ---------- */
+var statusMsg=null;
+function isDirty(){return snap(state)!==savedSnap;}
+function updateStatus(){
+  var dirty=isDirty(), s=$('status');
+  s.classList.toggle('dirty',dirty);
+  s.textContent=statusMsg||(!dirty?'All changes saved':(readOnly?'Edits kept in this browser':'Unsaved changes'));
+  $('save').disabled=!dirty;
+}
+var toastTimer=null;
+function toast(msg){var t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.hidden=true;},3800);}
+function persistDraft(){if(isDirty()) lsSet(DRAFT_KEY,{base:baseHash,state:state,ts:Date.now()}); else lsDel(DRAFT_KEY);}
+function changed(){statusMsg=null;persistDraft();updateStatus();}
+
+/* ---------- editing ---------- */
+var editTimer=null;
+function storeSheet(){
+  var html=sanitize(sheet.innerHTML);
+  if(view.tpl){
+    if(view.tpl==='resume') state.templates.resume=html;
+    else if(view.tpl==='letter') state.templates.letter=html;
+    else state.templates.letterByCat[view.tpl.slice(7)]=html;
+    return true;
+  }
+  var r=current(); if(!r) return false;
+  state.edits[view.doc+':'+r.id]=html; return true;
+}
+sheet.addEventListener('input',function(){
+  clearTimeout(editTimer);
+  editTimer=setTimeout(function(){editTimer=null;if(storeSheet()){changed();measure();if(view.tpl) renderRail();}},350);
+});
+sheet.addEventListener('paste',function(e){
+  var text=(e.clipboardData||window.clipboardData).getData('text/plain');
+  e.preventDefault();
+  if(!document.execCommand('insertText',false,text)){
+    var sel=window.getSelection(); if(!sel.rangeCount) return;
+    var rg=sel.getRangeAt(0); rg.deleteContents(); rg.insertNode(document.createTextNode(text)); rg.collapse(false);
+  }
+});
+function flushEdit(){if(editTimer){clearTimeout(editTimer);editTimer=null;if(storeSheet()) persistDraft();}}
+
+/* Insert tools: add a section, a sub-section (dated entry), a bullet or a paragraph after the block holding the cursor. */
+var lastBlock=null;
+function blockOf(n){if(!n||!sheet.contains(n)||n===sheet) return null;while(n&&n.parentNode!==sheet) n=n.parentNode;return n;}
+function liOf(n){while(n&&n!==sheet){if(n.nodeType===1&&n.tagName==='LI') return n;n=n.parentNode;}return null;}
+document.addEventListener('selectionchange',function(){var s=window.getSelection();if(s&&s.rangeCount&&sheet.contains(s.anchorNode)) lastBlock=s.anchorNode;});
+function placeCaret(el){
+  try{var rg=document.createRange();rg.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(rg);}catch(e){}
+  if(el.scrollIntoView) el.scrollIntoView({block:'nearest'});
+}
+function insertNodes(nodes,after){
+  var ref=after&&after.parentNode===sheet?after.nextSibling:null;
+  nodes.forEach(function(n){sheet.insertBefore(n,ref);});
+}
+function doInsert(kind){
+  var anchor=lastBlock&&sheet.contains(lastBlock)?lastBlock:null;
+  var block=blockOf(anchor), li=liOf(anchor), focus=null;
+  if(kind==='remove'){
+    var target=li||block;
+    if(!target){toast('Click inside the block you want to remove first.');return;}
+    var ul=li&&li.parentNode; target.remove(); if(ul&&ul!==sheet&&!ul.children.length) ul.remove();
+    lastBlock=null; sheet.dispatchEvent(new Event('input')); toast('Removed the block.'); return;
+  }
+  if(kind==='bullet'){
+    var nl=document.createElement('li'); nl.textContent=BULLET;
+    if(li) li.parentNode.insertBefore(nl,li.nextSibling);
+    else{var u=document.createElement('ul');u.appendChild(nl);insertNodes([u],block);}
+    focus=nl;
+  }else{
+    var html=kind==='section'?'<h2>New section</h2><p>[Details for this section]</p>'
+      :kind==='entry'?roleLine('<b>[Title]</b> | [Organization], [Location]','[Mon YYYY – Mon YYYY]')+list([esc(BULLET)])
+      :'<p>[Text]</p>';
+    var tmp=document.createElement('div'); tmp.innerHTML=html;
+    var nodes=Array.prototype.slice.call(tmp.childNodes);
+    insertNodes(nodes,block);
+    focus=kind==='section'?nodes[0]:kind==='entry'?nodes[0].querySelector('b'):nodes[0];
+  }
+  sheet.focus(); placeCaret(focus); lastBlock=focus;
+  sheet.dispatchEvent(new Event('input'));
+}
+$('tools').addEventListener('mousedown',function(e){if(e.target.closest('[data-insert]')) e.preventDefault();});
+$('tools').addEventListener('click',function(e){var b=e.target.closest('[data-insert]');if(b) doInsert(b.getAttribute('data-insert'));});
+
+['company','manager','role','date'].forEach(function(n){
+  $('f-'+n).addEventListener('input',function(e){
+    var r=current(); if(!r) return;
+    var f=Object.assign({},state.fields[r.id]||{}), v=e.target.value.trim();
+    if(v) f[n]=v; else delete f[n];
+    if(Object.keys(f).length) state.fields[r.id]=f; else delete state.fields[r.id];
+    applyFields(r); measure(); changed();
+  });
+});
+
+$('cats').addEventListener('click',function(e){
+  var o=e.target.closest('[data-organize]'); if(o){openOrg(o.getAttribute('data-organize'));return;}
+  var b=e.target.closest('[data-cat]'); if(!b) return;
+  flushEdit(); closePanels(); view.cat=b.getAttribute('data-cat'); view.id=null; view.tpl=null; render();
+});
+$('roles').addEventListener('click',function(e){
+  var o=e.target.closest('[data-organize]'); if(o){openOrg(o.getAttribute('data-organize'));return;}
+  var a=e.target.closest('[data-add]'); if(a){openPanel('new',a.getAttribute('data-add'));return;}
+  var b=e.target.closest('[data-id]'); if(!b) return;
+  flushEdit(); closePanels(); view.id=b.getAttribute('data-id'); view.tpl=null; render();
+});
+$('tpls').addEventListener('click',function(e){var b=e.target.closest('[data-tpl]');if(!b)return;flushEdit();closePanels();view.tpl=b.getAttribute('data-tpl');render();});
+Array.prototype.forEach.call(document.querySelectorAll('[data-organize]'),function(b){if(!b.closest('#cats')&&!b.closest('#roles')) b.addEventListener('click',function(){openOrg(b.getAttribute('data-organize'));});});
+Array.prototype.forEach.call(document.querySelectorAll('#seg button'),function(b){b.addEventListener('click',function(){flushEdit();view.doc=b.getAttribute('data-doc');render();});});
+$('empty-add').addEventListener('click',function(){openPanel('new',state.sections[0]);});
+
+var resetArmed=false, resetTimer=null;
+function disarmReset(){resetArmed=false;clearTimeout(resetTimer);$('reset').classList.remove('warn');renderDocLabels();}
+function renderDocLabels(){var t=view.tpl;$('reset').textContent=t?(t.indexOf('letter:')===0?'Use the common letter':'Reset template'):(view.doc==='resume'?'Reset to blank template':'Reset letter');}
+$('reset').addEventListener('click',function(){
+  if(!resetArmed){resetArmed=true;$('reset').textContent='Click again to confirm';$('reset').classList.add('warn');resetTimer=setTimeout(disarmReset,4000);return;}
+  disarmReset();
+  if(editTimer){clearTimeout(editTimer);editTimer=null;}
+  if(view.tpl){
+    if(view.tpl==='resume') state.templates.resume=DEFAULT_TEMPLATES.resume;
+    else if(view.tpl==='letter') state.templates.letter=DEFAULT_TEMPLATES.letter;
+    else delete state.templates.letterByCat[view.tpl.slice(7)];
+    changed(); render(); toast('Template reset.'); return;
+  }
+  var r=current(); if(!r) return;
+  delete state.edits[view.doc+':'+r.id];
+  if(view.doc==='letter') delete state.fields[r.id];
+  changed(); render(); toast(view.doc==='resume'?'Reset to your blank template.':'Reset the cover letter.');
+});
+
+/* ---------- new / edit resume panel ---------- */
+var panelMode=null, delArmed=false, delTimer=null;
+function disarmDelete(){delArmed=false;clearTimeout(delTimer);$('n-del').textContent='Delete this resume';}
+function catOptions(){return state.cats.map(function(c){return '<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>';}).join('');}
+function secOptions(){return state.sections.map(function(s){return '<option value="'+esc(s)+'">'+esc(s)+'</option>';}).join('');}
+function fillBase(){
+  var opts='<option value="blank">Your blank template</option><option value="paste">Paste resume text</option>';
+  state.cats.forEach(function(c){resumesIn(c.id).forEach(function(r){opts+='<option value="copy:'+esc(r.id)+'">Copy of '+esc(r.name)+' ('+esc(c.name)+')</option>';});});
+  $('n-base').innerHTML=opts; $('n-base').value='blank'; $('paste-wrap').hidden=true;
+}
+function openPanel(mode,section){
+  flushEdit(); closePanels(); panelMode=mode;
+  var r=current();
+  $('n-err').hidden=true; $('n-cat').innerHTML=catOptions(); $('n-group').innerHTML=secOptions();
+  $('base-wrap').hidden=mode==='edit';
+  if(mode==='new'){
+    $('panel-title').textContent='New resume'; $('n-name').value=''; $('n-cat').value=view.cat; $('n-group').value=section||state.sections[0];
+    fillBase(); $('n-paste').value=''; $('n-ok').textContent='Create resume'; $('n-del').hidden=true;
+  }else{
+    $('panel-title').textContent='Edit resume details'; $('n-name').value=r.name; $('n-cat').value=r.cat; $('n-group').value=r.section;
+    $('paste-wrap').hidden=true; $('n-ok').textContent='Save details'; $('n-del').hidden=false;
+  }
+  $('panel').hidden=false; $('n-name').focus();
+}
+function closePanels(){$('panel').hidden=true;$('org').hidden=true;panelMode=null;disarmDelete();}
+$('n-base').addEventListener('change',function(){$('paste-wrap').hidden=$('n-base').value!=='paste';});
+$('n-cancel').addEventListener('click',closePanels);
+$('panel').addEventListener('keydown',function(e){if(e.key==='Escape'){e.preventDefault();closePanels();}});
+$('edit-details').addEventListener('click',function(){openPanel('edit');});
+$('panel').addEventListener('submit',function(e){
+  e.preventDefault();
+  var name=$('n-name').value.replace(/\s+/g,' ').trim(), cat=$('n-cat').value, section=$('n-group').value;
+  function fail(msg,focus){var err=$('n-err');err.textContent=msg;err.hidden=false;$(focus||'n-name').focus();}
+  if(!name){fail('Give the resume a name, for example Product Manager.');return;}
+  if(name.length>60){fail('Keep the name under 60 characters.');return;}
+  var editing=panelMode==='edit'?current():null;
+  if(resumesIn(cat).some(function(r){return r.name.toLowerCase()===name.toLowerCase()&&(!editing||r.id!==editing.id);})){fail(catOf(cat).name+' already has a resume called '+name+'. Pick another name.');return;}
+  if(editing){
+    editing.name=name; editing.cat=cat; editing.section=section;
+    view.cat=cat; view.id=editing.id; closePanels(); changed(); render(); toast('Updated the resume details.');
+    return;
+  }
+  var base=$('n-base').value, html;
+  if(base==='paste'){
+    var txt=$('n-paste').value.trim();
+    if(txt.length<20){fail('Paste the resume text first.','n-paste');return;}
+    html=pasteToHTML(txt);
+  }else if(base.indexOf('copy:')===0){
+    var src=byId(base.slice(5)); html=src&&state.edits['resume:'+src.id]?state.edits['resume:'+src.id]:state.templates.resume;
+  }else html=state.templates.resume;
+  var r={id:newId('r'),cat:cat,section:section,name:name};
+  state.resumes.push(r);
+  state.edits['resume:'+r.id]=sanitize(html);
+  view.cat=cat; view.id=r.id; view.doc='resume'; view.tpl=null;
+  closePanels(); changed(); render();
+  toast('Added '+name+' to '+catOf(cat).name+'. Click Save changes to keep it.');
+});
+$('n-del').addEventListener('click',function(){
+  if(!delArmed){delArmed=true;$('n-del').textContent='Click again to delete';delTimer=setTimeout(disarmDelete,4000);return;}
+  var r=current(); if(!r){closePanels();return;}
+  state.resumes=state.resumes.filter(function(x){return x.id!==r.id;});
+  delete state.edits['resume:'+r.id]; delete state.edits['letter:'+r.id]; delete state.fields[r.id];
+  view.id=null; closePanels(); changed(); render(); toast('Deleted '+r.name+'. Click Save changes to make it final.');
+});
+
+/* ---------- industries and sections ---------- */
+function orgErr(msg){var e=$('org-err');e.textContent=msg||'';e.hidden=!msg;}
+function renderOrg(){
+  $('org-cats').innerHTML=state.cats.map(function(c){
+    var n=resumesIn(c.id).length;
+    return '<div class="org-row"><input type="text" maxlength="40" value="'+esc(c.name)+'" data-rename-cat="'+esc(c.id)+'" aria-label="Industry name"><span class="count">'+n+'</span><button class="btn sm" type="button" data-del-cat="'+esc(c.id)+'">Delete</button></div>';
+  }).join('');
+  $('org-secs').innerHTML=state.sections.map(function(s,i){
+    var n=state.resumes.filter(function(r){return r.section===s;}).length;
+    return '<div class="org-row"><input type="text" maxlength="40" value="'+esc(s)+'" data-rename-sec="'+i+'" aria-label="Section name"><span class="count">'+n+'</span><button class="btn sm" type="button" data-del-sec="'+i+'">Delete</button></div>';
+  }).join('');
+}
+function openOrg(focus){
+  flushEdit(); closePanels(); orgErr(''); renderOrg(); $('org').hidden=false;
+  if(focus==='cat-add') $('add-cat').focus(); else if(focus==='sec-add') $('add-sec').focus();
+  else if(focus==='sec') $('org-secs').querySelector('input').focus(); else $('org-cats').querySelector('input').focus();
+}
+$('org-done').addEventListener('click',function(){closePanels();render();});
+$('org').addEventListener('keydown',function(e){if(e.key==='Escape'){e.preventDefault();closePanels();render();}});
+function cleanName(s){return String(s).replace(/\s+/g,' ').trim();}
+function addCat(){
+  var name=cleanName($('add-cat').value);
+  if(!name){orgErr('Type a name for the new industry.');$('add-cat').focus();return;}
+  if(state.cats.some(function(c){return c.name.toLowerCase()===name.toLowerCase();})){orgErr('There is already an industry called '+name+'.');return;}
+  var c={id:newId('i'),name:name}; state.cats.push(c); $('add-cat').value=''; orgErr('');
+  view.cat=c.id; view.id=null; view.tpl=null; changed(); renderOrg(); renderRail(); renderDoc(); toast('Added '+name+'.');
+}
+function addSec(){
+  var name=cleanName($('add-sec').value);
+  if(!name){orgErr('Type a name for the new section.');$('add-sec').focus();return;}
+  if(state.sections.some(function(s){return s.toLowerCase()===name.toLowerCase();})){orgErr('There is already a section called '+name+'.');return;}
+  state.sections.push(name); $('add-sec').value=''; orgErr(''); changed(); renderOrg(); renderRail(); toast('Added '+name+'.');
+}
+$('add-cat-btn').addEventListener('click',addCat);
+$('add-sec-btn').addEventListener('click',addSec);
+$('add-cat').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addCat();}});
+$('add-sec').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addSec();}});
+$('org').addEventListener('change',function(e){
+  var t=e.target, name=cleanName(t.value);
+  if(t.hasAttribute('data-rename-cat')){
+    var c=catOf(t.getAttribute('data-rename-cat'));
+    if(!name||state.cats.some(function(x){return x!==c&&x.name.toLowerCase()===name.toLowerCase();})){orgErr(name?'There is already an industry called '+name+'.':'An industry needs a name.');t.value=c.name;return;}
+    c.name=name; orgErr(''); changed(); renderRail(); renderDoc();
+  }else if(t.hasAttribute('data-rename-sec')){
+    var i=+t.getAttribute('data-rename-sec'), old=state.sections[i];
+    if(!name||state.sections.some(function(s,j){return j!==i&&s.toLowerCase()===name.toLowerCase();})){orgErr(name?'There is already a section called '+name+'.':'A section needs a name.');t.value=old;return;}
+    state.sections[i]=name; state.resumes.forEach(function(r){if(r.section===old) r.section=name;});
+    orgErr(''); changed(); renderRail(); renderDoc();
+  }
+});
+$('org').addEventListener('click',function(e){
+  var dc=e.target.closest('[data-del-cat]'), ds=e.target.closest('[data-del-sec]');
+  if(dc){
+    if(state.cats.length<2){orgErr('Keep at least one industry.');return;}
+    var id=dc.getAttribute('data-del-cat'), n=resumesIn(id).length;
+    if(!dc.getAttribute('data-armed')){dc.setAttribute('data-armed','1');dc.textContent=n?'Delete '+n+' resume'+(n>1?'s':'')+'?':'Confirm';dc.classList.add('warn');setTimeout(function(){if(dc.isConnected){dc.removeAttribute('data-armed');dc.textContent='Delete';dc.classList.remove('warn');}},4000);return;}
+    var name=catOf(id).name;
+    resumesIn(id).forEach(function(r){delete state.edits['resume:'+r.id];delete state.edits['letter:'+r.id];delete state.fields[r.id];});
+    state.resumes=state.resumes.filter(function(r){return r.cat!==id;});
+    state.cats=state.cats.filter(function(c){return c.id!==id;});
+    delete state.templates.letterByCat[id];
+    if(view.cat===id){view.cat=state.cats[0].id;view.id=null;}
+    if(view.tpl==='letter:'+id) view.tpl=null;
+    orgErr(''); changed(); renderOrg(); renderRail(); renderDoc(); toast('Deleted '+name+'.');
+  }else if(ds){
+    if(state.sections.length<2){orgErr('Keep at least one section.');return;}
+    var i=+ds.getAttribute('data-del-sec'), sec=state.sections[i];
+    var rest=state.sections.filter(function(s,j){return j!==i;}), dest=rest.indexOf('Other')>-1?'Other':rest[0];
+    var m=state.resumes.filter(function(r){return r.section===sec;}).length;
+    if(m&&!ds.getAttribute('data-armed')){ds.setAttribute('data-armed','1');ds.textContent='Move '+m+' to '+dest+'?';ds.classList.add('warn');setTimeout(function(){if(ds.isConnected){ds.removeAttribute('data-armed');ds.textContent='Delete';ds.classList.remove('warn');}},4000);return;}
+    state.resumes.forEach(function(r){if(r.section===sec) r.section=dest;});
+    state.sections=rest; orgErr(''); changed(); renderOrg(); renderRail(); renderDoc();
+    toast('Deleted '+sec+(m?'. Its resumes moved to '+dest+'.':'.'));
+  }
+});
+
+/* ---------- saving the page ---------- */
+function buildDoc(){
+  var st=JSON.stringify(state).replace(/</g,'\\u003c');
+  return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>'+RESET+'</style></head><body>'+
+    '<title>'+esc(TITLE)+'</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n'+FONT_LINK+'\n'+
+    '<style id="app-style">'+$('app-style').textContent+'</style>\n<div id="app"></div>\n'+
+    '<script type="application/json" id="resume-state">'+st+'</'+'script>\n'+LIBS+'\n'+
+    '<script id="app-script">'+$('app-script').textContent+'</'+'script>\n</body></html>';
+}
+function markSaved(){savedSnap=snap(state);baseHash=hash(savedSnap);statusMsg=null;updateStatus();}
+function save(){
+  flushEdit();
+  if(!isDirty()) return;
+  artReady.then(function(a){
+    if(a&&!readOnly){
+      statusMsg='Saving…'; updateStatus();
+      persistDraft(); ssSet('rs-force-draft','1');
+      a.publish(buildDoc()).then(function(){
+        ssDel('rs-force-draft'); lsDel(DRAFT_KEY); markSaved(); toast('Saved. Your library is now part of this page.');
+      }).catch(function(err){
+        var c=err&&err.code;
+        if(c==='conflict'){statusMsg='Loading a newer version…';updateStatus();toast('Someone saved a newer version. Loading it with your edits on top.');return;}
+        ssDel('rs-force-draft'); statusMsg=null;
+        if(['not_writer','not_granted','not_declared','consent_required','capability_disabled','capability_removed'].indexOf(c)>-1){readOnly=true;updateStatus();toast('This view can’t save to the page. Your edits stay in this browser; export the library to keep a copy.');}
+        else if(c==='rate_limited'){updateStatus();toast('Saving too often. Wait a moment, then save again.');}
+        else{updateStatus();toast('Couldn’t save just now. Your edits are kept in this browser; try again.');}
+      });
+      return;
+    }
+    persistDraft();
+    if(inArtifact){readOnly=true;statusMsg=null;updateStatus();toast('Saving to the page isn’t available here. Your edits stay in this browser; export the library to keep a copy.');return;}
+    offer(slug(TITLE)+'.html',new Blob([buildDoc()],{type:'text/html'})).then(function(ok){
+      if(ok){markSaved();lsSet(DRAFT_KEY,{base:baseHash,state:state,ts:Date.now()});toast('Saved in this browser and downloaded an updated copy.');}
+    });
+  });
+}
+$('save').addEventListener('click',save);
+document.addEventListener('keydown',function(e){if((e.metaKey||e.ctrlKey)&&(e.key==='s'||e.key==='S')){e.preventDefault();save();}});
+
+/* ---------- downloads ---------- */
+function offer(name,data){
+  return dlReady.then(function(d){
+    if(d){
+      return d.save({filename:name,data:data}).then(function(){toast('Downloaded '+name);return true;}).catch(function(err){
+        var c=err&&err.code; if(c==='declined') return false;
+        if(c==='rate_limited'){toast('A download is already waiting for your answer.');return false;}
+        toast('Downloads aren’t available in this view.'); return false;
+      });
+    }
+    if(inArtifact){toast('Downloads aren’t available in this view.');return false;}
+    var blob=data instanceof Blob?data:new Blob([data],{type:'application/octet-stream'});
+    var url=URL.createObjectURL(blob), a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url);},4000); return true;
+  });
+}
+function slug(s){return String(s).replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'')||'Resume';}
+function fileBase(){
+  var who=slug(ownerName());
+  if(view.tpl) return who+'_Template_'+slug(tplLabel(view.tpl));
+  var r=current();return who+'_'+slug(r.name)+'_'+slug(catOf(r.cat).name)+'_'+(view.doc==='resume'?'Resume':'Cover_Letter');
+}
+
+function parseSheet(root){
+  var out=[];
+  function runs(el){
+    var r=[];
+    (function walk(n,b){
+      Array.prototype.forEach.call(n.childNodes,function(c){
+        if(c.nodeType===3){var t=c.nodeValue.replace(/\s+/g,' ');if(t) r.push({t:t,b:b});}
+        else if(c.nodeType===1){if(c.tagName==='BR') r.push({br:true}); else if(!(c.classList&&c.classList.contains('r-date'))) walk(c,b||c.tagName==='B'||c.tagName==='STRONG');}
+      });
+    })(el,false);
+    while(r.length&&!r[0].br&&!r[0].t.trim()) r.shift();
+    if(r[0]&&!r[0].br) r[0].t=r[0].t.replace(/^\s+/,'');
+    var L=r[r.length-1]; if(L&&!L.br) L.t=L.t.replace(/\s+$/,'');
+    return r.filter(function(x){return x.br||x.t;});
+  }
+  function text(el){return el.textContent.replace(/\s+/g,' ').trim();}
+  Array.prototype.forEach.call(root.childNodes,function(n){
+    if(n.nodeType===3){var t=n.nodeValue.trim();if(t) out.push({type:'p',runs:[{t:t,b:false}]});return;}
+    if(n.nodeType!==1) return;
+    var tag=n.tagName;
+    if(tag==='H1') out.push({type:'name',text:text(n)});
+    else if(tag==='H2') out.push({type:'h2',text:text(n)});
+    else if(tag==='H3') out.push({type:'p',runs:[{t:text(n),b:true}]});
+    else if(tag==='UL'||tag==='OL'){Array.prototype.forEach.call(n.children,function(li){if(li.tagName==='LI'){var rr=runs(li);if(rr.length) out.push({type:'li',runs:rr});}});}
+    else if(n.classList.contains('r-role')){var d=n.querySelector('.r-date');out.push({type:'role',runs:runs(n),date:d?text(d):''});}
+    else if(n.classList.contains('r-contact')) out.push({type:'contact',runs:runs(n)});
+    else{var rr=runs(n);if(rr.length) out.push({type:'p',runs:rr,small:n.classList.contains('r-note')});}
+  });
+  return out;
+}
+
+function pdfClean(s){return String(s).replace(/ /g,' ').replace(/[–—]/g,'-').replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/…/g,'...').replace(/≈/g,'~').replace(/[^\x09\x0a\x0d\x20-\x7e\xa0-\xff]/g,'');}
+function makePDF(blocks,isLetter){
+  var J=window.jspdf&&window.jspdf.jsPDF; if(!J) return null;
+  var doc=new J({unit:'pt',format:'letter'});
+  var PH=792,M=44,W=612-2*M,y=M+8;
+  var INK=[27,31,36],MUTED=[59,69,82],ACC=[31,78,121];
+  var BASE=isLetter?10.6:9.6;
+  function lh(s){return s*(isLetter?1.45:1.32);}
+  function font(b,s){doc.setFont('helvetica',b?'bold':'normal');doc.setFontSize(s);}
+  function need(h){if(y+h>PH-M){doc.addPage();y=M+8;}}
+  function lines(rr,width,size){
+    var ls=[[]],w=0;
+    rr.forEach(function(r){
+      if(r.br){ls.push([]);w=0;return;}
+      pdfClean(r.t).split(/(\s+)/).forEach(function(p){
+        if(!p) return;
+        var sp=/^\s+$/.test(p), t=sp?' ':p; font(r.b,size); var tw=doc.getTextWidth(t), line=ls[ls.length-1];
+        if(sp){if(!line.length) return; line.push({t:t,b:r.b,w:tw}); w+=tw; return;}
+        if(w+tw>width&&line.length){while(line.length&&line[line.length-1].t===' '){w-=line.pop().w;} ls.push([]); w=0;}
+        ls[ls.length-1].push({t:t,b:r.b,w:tw}); w+=tw;
+      });
+    });
+    return ls;
+  }
+  function draw(rr,x,width,size,color){
+    lines(rr,width,size).forEach(function(line){
+      need(lh(size)); var cx=x; doc.setTextColor(color[0],color[1],color[2]);
+      line.forEach(function(seg){font(seg.b,size);doc.text(seg.t,cx,y);cx+=seg.w;});
+      y+=lh(size);
+    });
+  }
+  blocks.forEach(function(bk){
+    if(bk.type==='name'){need(26);font(true,19);doc.setTextColor(INK[0],INK[1],INK[2]);doc.text(pdfClean(bk.text),M,y+6);y+=24;}
+    else if(bk.type==='contact'){draw(bk.runs,M,W,8.8,MUTED);y+=isLetter?14:4;}
+    else if(bk.type==='h2'){y+=7;need(30);font(true,10.2);doc.setTextColor(ACC[0],ACC[1],ACC[2]);doc.text(pdfClean(bk.text).toUpperCase(),M,y);y+=4;doc.setDrawColor(ACC[0],ACC[1],ACC[2]);doc.setLineWidth(0.7);doc.line(M,y,M+W,y);y+=11;}
+    else if(bk.type==='role'){y+=3;need(lh(BASE));font(false,BASE);var dt=pdfClean(bk.date),dw=doc.getTextWidth(dt);doc.setTextColor(MUTED[0],MUTED[1],MUTED[2]);doc.text(dt,M+W,y,{align:'right'});draw(bk.runs,M,W-dw-12,BASE,INK);y+=1;}
+    else if(bk.type==='li'){need(lh(BASE));doc.setFillColor(INK[0],INK[1],INK[2]);doc.circle(M+4,y-BASE*0.33,1.15,'F');draw(bk.runs,M+11,W-11,BASE,INK);y+=1.6;}
+    else{draw(bk.runs,M,W,bk.small?8.8:BASE,bk.small?MUTED:INK);y+=isLetter?8:3;}
+  });
+  return doc.output('blob');
+}
+
+function xe(s){return String(s).replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function makeDOCX(blocks,isLetter){
+  if(!window.JSZip) return null;
+  var NS='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"';
+  var base=isLetter?'<w:sz w:val="22"/><w:szCs w:val="22"/>':'';
+  function R(rr,extra,noBase){return rr.map(function(x){if(x.br) return '<w:r><w:br/></w:r>';var pr=(x.b?'<w:b/>':'')+(extra||'')+(noBase?'':base);return '<w:r>'+(pr?'<w:rPr>'+pr+'</w:rPr>':'')+'<w:t xml:space="preserve">'+xe(x.t)+'</w:t></w:r>';}).join('');}
+  function P(ppr,inner){return '<w:p><w:pPr>'+ppr+'</w:pPr>'+inner+'</w:p>';}
+  var small='<w:color w:val="3B4552"/><w:sz w:val="18"/><w:szCs w:val="18"/>';
+  var body=blocks.map(function(bk){
+    switch(bk.type){
+      case 'name': return P('<w:spacing w:after="40"/>','<w:r><w:rPr><w:b/><w:color w:val="14202C"/><w:sz w:val="36"/><w:szCs w:val="36"/></w:rPr><w:t xml:space="preserve">'+xe(bk.text)+'</w:t></w:r>');
+      case 'contact': return P('<w:spacing w:after="'+(isLetter?'280':'100')+'"/>',R(bk.runs,small,true));
+      case 'h2': return P('<w:keepNext/><w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="1F4E79"/></w:pBdr><w:spacing w:before="200" w:after="80"/>','<w:r><w:rPr><w:b/><w:caps/><w:color w:val="1F4E79"/><w:sz w:val="21"/><w:szCs w:val="21"/></w:rPr><w:t xml:space="preserve">'+xe(bk.text)+'</w:t></w:r>');
+      case 'role': return P('<w:keepNext/><w:tabs><w:tab w:val="right" w:pos="10512"/></w:tabs><w:spacing w:before="110" w:after="30"/>',R(bk.runs)+'<w:r><w:tab/></w:r><w:r><w:rPr><w:color w:val="3B4552"/>'+base+'</w:rPr><w:t xml:space="preserve">'+xe(bk.date)+'</w:t></w:r>');
+      case 'li': return P('<w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr><w:spacing w:after="30"/>',R(bk.runs));
+      default: return P('<w:spacing w:after="'+(isLetter?'180':'60')+'"/>',bk.small?R(bk.runs,small,true):R(bk.runs));
+    }
+  }).join('');
+  var docXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document '+NS+'><w:body>'+body+'<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="864" w:right="864" w:bottom="864" w:left="864" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr></w:body></w:document>';
+  var styles='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles '+NS+'><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri" w:eastAsia="Calibri"/><w:color w:val="1B1F24"/><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="40" w:line="252" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style></w:styles>';
+  var numbering='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:numbering '+NS+'><w:abstractNum w:abstractNumId="0"><w:multiLevelType w:val="singleLevel"/><w:lvl w:ilvl="0"><w:start w:val="1"/><w:numFmt w:val="bullet"/><w:lvlText w:val="•"/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="300" w:hanging="200"/></w:pPr></w:lvl></w:abstractNum><w:num w:numId="1"><w:abstractNumId w:val="0"/></w:num></w:numbering>';
+  var ct='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/></Types>';
+  var rels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+  var docRels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/></Relationships>';
+  var zip=new window.JSZip();
+  zip.file('[Content_Types].xml',ct); zip.file('_rels/.rels',rels); zip.file('word/document.xml',docXml);
+  zip.file('word/styles.xml',styles); zip.file('word/numbering.xml',numbering); zip.file('word/_rels/document.xml.rels',docRels);
+  return zip.generateAsync({type:'blob'});
+}
+function makeHTML(){
+  var isLetter=sheet.classList.contains('letter');
+  var css=SHEET_CSS+'body{margin:0;background:#e7ebf0;font-family:"Source Sans 3",Calibri,Arial,sans-serif}'+
+    '.bar{max-width:8.5in;margin:16px auto 10px;padding:0 16px;box-sizing:border-box;text-align:right}'+
+    '.bar button{font:600 14px "Source Sans 3",Arial,sans-serif;background:#1f4e79;color:#fff;border:0;border-radius:6px;padding:8px 14px;cursor:pointer}'+
+    '.sheet{max-width:8.5in;margin:0 auto 32px;padding:.6in .65in;box-sizing:border-box;box-shadow:0 2px 14px rgba(0,0,0,.12)}'+
+    '@page{size:letter;margin:.55in}@media print{body{background:#fff}.bar{display:none}.sheet{box-shadow:none;padding:0;margin:0;max-width:none}}';
+  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(fileBase().replace(/_/g,' '))+'</title>'+FONT_LINK+'<style>'+css+'</style></head><body>'+
+    '<div class="bar"><button type="button" onclick="window.print()">Print or save as PDF</button></div>'+
+    '<div class="sheet'+(isLetter?' letter':'')+'">'+sanitize(sheet.innerHTML)+'</div></body></html>';
+}
+$('dl-pdf').addEventListener('click',function(){flushEdit();var blob=makePDF(parseSheet(sheet),sheet.classList.contains('letter'));if(!blob){toast('The PDF tool is still loading. Try again in a moment.');return;}offer(fileBase()+'.pdf',blob);});
+$('dl-docx').addEventListener('click',function(){flushEdit();var p=makeDOCX(parseSheet(sheet),sheet.classList.contains('letter'));if(!p){toast('The Word tool is still loading. Try again in a moment.');return;}p.then(function(blob){offer(fileBase()+'.docx',blob);}).catch(function(){toast('Couldn’t build the Word file. Try again.');});});
+$('dl-html').addEventListener('click',function(){flushEdit();offer(fileBase()+'.html',new Blob([makeHTML()],{type:'text/html'}));});
+$('dl-all').addEventListener('click',function(){flushEdit();offer(slug(TITLE)+'.html',new Blob([buildDoc()],{type:'text/html'}));});
+if(!inArtifact){$('print').hidden=false;$('print').addEventListener('click',function(){flushEdit();window.print();});}
+
+/* ---------- library file: shared with the extension (format documented in docs/library-format.md) ---------- */
+function blocksFromHTML(html){var d=document.createElement('div');d.innerHTML=sanitize(html);return parseSheet(d);}
+function runsText(rr){return rr.map(function(x){return x.br?' ':x.t;}).join('').replace(/\s+/g,' ').trim();}
+function toVariant(r){
+  var blocks=blocksFromHTML(state.edits['resume:'+r.id]||state.templates.resume);
+  var v={label:r.name,title:r.name,industry:catOf(r.cat).name,section:r.section,name:'',contact:{},summary:'',roles:[],education:[],certs:[],projects:[],toolkit:{},competencies:{},extraSections:[],skillsText:''};
+  var sec='', cur=null, extra=null;
+  var KNOWN=/summary|profile|skill|competenc|experience|employment|consult|project|educat|certif|tool/;
+  blocks.forEach(function(b){
+    if(b.type==='name'){v.name=b.text;return;}
+    if(b.type==='h2'){sec=b.text.toLowerCase();cur=null;extra=null;if(!KNOWN.test(sec)){extra={heading:b.text,items:[]};v.extraSections.push(extra);}return;}
+    var txt=b.runs?runsText(b.runs):'';
+    if(b.type==='contact'){
+      v.contact.raw=txt;
+      txt.split(/\s*\|\s*/).forEach(function(p,i){
+        if(/@/.test(p)) v.contact.email=p; else if(/linkedin/i.test(p)) v.contact.linkedin=p;
+        else if(/\d{3}.*\d{3}.*\d{3,4}/.test(p)) v.contact.phone=p; else if(/\.[a-z]{2,}/i.test(p)) v.contact.portfolio=p;
+        else if(i===0) v.contact.location=p;
+      });
+      return;
+    }
+    if(extra){
+      if(b.type==='role'){cur={title:runsText(b.runs),date:b.date,bullets:[]};extra.items.push(cur);}
+      else if(b.type==='li'&&cur) cur.bullets.push(txt); else extra.items.push({text:txt});
+      return;
+    }
+    if(b.type==='role'){
+      var bold=runsText(b.runs.filter(function(x){return x.b;})), rest=runsText(b.runs.filter(function(x){return !x.b;})).replace(/^\|\s*/,'');
+      if(/educat/.test(sec)){cur={deg:bold,school:rest,date:b.date,extra:''};v.education.push(cur);}
+      else{var i=rest.lastIndexOf(',');cur={title:bold,org:i>-1?rest.slice(0,i).trim():rest,loc:i>-1?rest.slice(i+1).trim():'',date:b.date,bullets:[],section:/consult/.test(sec)?'consulting':'experience'};v.roles.push(cur);}
+      return;
+    }
+    if(b.type==='li'){
+      if(/skill|competenc/.test(sec)){var m=txt.match(/^([^:]{1,80}):\s*(.*)$/);if(m) v.competencies[m[1].trim()]=m[2].trim(); else v.competencies.Skills=(v.competencies.Skills?v.competencies.Skills+', ':'')+txt;}
+      else if(/project/.test(sec)){var bn=runsText(b.runs.filter(function(x){return x.b;})).replace(/[.:\s]+$/,'');v.projects.push({n:bn||txt.slice(0,60),d:bn?runsText(b.runs.filter(function(x){return !x.b;})):txt});}
+      else if(cur&&cur.bullets) cur.bullets.push(txt);
+      else if(/summary|profile/.test(sec)) v.summary+=(v.summary?' ':'')+txt;
+      return;
+    }
+    if(/^certifications?:/i.test(txt)){v.certs=txt.replace(/^certifications?:\s*/i,'').split(/\s*[·|;]\s*/).filter(Boolean);return;}
+    if(/summary|profile/.test(sec)){v.summary+=(v.summary?' ':'')+txt;return;}
+    if(/tool/.test(sec)){v.toolkit.Tools=(v.toolkit.Tools||[]).concat(txt.split(/\s*[·|,;]\s*/).filter(Boolean));return;}
+    if(/educat/.test(sec)&&cur&&'extra' in cur){cur.extra+=(cur.extra?' ':'')+txt;}
+  });
+  var comp=v.competencies;
+  v.skillsText=Object.keys(comp).map(function(k){return comp[k];}).concat(v.toolkit.Tools||[]).join(' ');
+  return v;
+}
+function exportLibrary(){
+  flushEdit();
+  return JSON.stringify({format:LIB_FORMAT,version:3,exportedAt:new Date().toISOString(),
+    industries:state.cats.map(function(c){return {id:c.id,name:c.name};}),sections:state.sections.slice(),
+    templates:{resumeHtml:state.templates.resume,letterHtml:state.templates.letter,letterHtmlByIndustry:state.templates.letterByCat},
+    resumes:state.resumes.map(function(r){
+      return {id:r.id,industryId:r.cat,industry:catOf(r.cat).name,section:r.section,name:r.name,
+        resumeHtml:state.edits['resume:'+r.id]||state.templates.resume,letterHtml:state.edits['letter:'+r.id]||null,letterFields:state.fields[r.id]||null,
+        variant:toVariant(r)};
+    })},null,2);
+}
+$('lib-export').addEventListener('click',function(){
+  var d=new Date(), stamp=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  offer(slug(ownerName())+'_Resume_Library_'+stamp+'.json',exportLibrary());
+});
+$('lib-import').addEventListener('click',function(){$('import-file').value='';$('import-file').click();});
+function ensureCat(id,name){
+  var c=state.cats.filter(function(x){return (id&&x.id===id)||(name&&x.name.toLowerCase()===String(name).toLowerCase());})[0];
+  if(c) return c.id;
+  if(!name&&!id) return state.cats[0].id;
+  c={id:(typeof id==='string'&&/^[A-Za-z0-9_-]{1,40}$/.test(id))?id:newId('i'),name:String(name||id).slice(0,40)}; state.cats.push(c); return c.id;
+}
+function ensureSection(name){
+  if(!name) return state.sections.indexOf('Other')>-1?'Other':state.sections[0];
+  var s=state.sections.filter(function(x){return x.toLowerCase()===String(name).toLowerCase();})[0];
+  if(s) return s; s=String(name).slice(0,40); state.sections.push(s); return s;
+}
+function importLibrary(data){
+  var entries=[];
+  if(data&&data.format===LIB_FORMAT&&Array.isArray(data.resumes)){
+    entries=data.resumes;
+    (data.industries||[]).forEach(function(c){if(c&&c.name) ensureCat(c.id,c.name);});
+    (data.sections||[]).forEach(function(s){if(s) ensureSection(s);});
+    var t=data.templates||{};
+    if(t.resumeHtml) state.templates.resume=sanitize(t.resumeHtml);
+    if(t.letterHtml) state.templates.letter=sanitize(t.letterHtml);
+    if(t.letterHtmlByIndustry&&typeof t.letterHtmlByIndustry==='object') Object.keys(t.letterHtmlByIndustry).forEach(function(k){if(state.cats.some(function(c){return c.id===k;})) state.templates.letterByCat[k]=sanitize(t.letterHtmlByIndustry[k]);});
+  }
+  else if(Array.isArray(data)) entries=data.map(function(v){return {name:v.label||v.title,industry:v.industry,section:v.section,variant:v};});
+  else if(data&&Array.isArray(data.variants)) entries=data.variants.map(function(v){return {name:v.label||v.title,industry:v.industry,section:v.section,variant:v};});
+  var added=0, replaced=0;
+  entries.forEach(function(e){
+    if(!e||typeof e!=='object') return;
+    var html=e.resumeHtml?String(e.resumeHtml):(e.variant?variantToHTML(e.variant):null);
+    if(!html) return;
+    var name=String(e.name||(e.variant&&(e.variant.label||e.variant.title))||'Imported resume').slice(0,60);
+    var cat=ensureCat(e.industryId,e.industry), section=ensureSection(e.section);
+    var id=(typeof e.id==='string'&&/^[A-Za-z0-9_-]{1,40}$/.test(e.id))?e.id:newId('r');
+    var existing=byId(id);
+    if(existing){existing.name=name;existing.cat=cat;existing.section=section;replaced++;}
+    else{state.resumes.push({id:id,cat:cat,section:section,name:name});added++;}
+    state.edits['resume:'+id]=sanitize(html);
+    if(e.letterHtml) state.edits['letter:'+id]=sanitize(e.letterHtml); else delete state.edits['letter:'+id];
+    if(e.letterFields&&typeof e.letterFields==='object'){var f={};['company','manager','role','date'].forEach(function(k){if(typeof e.letterFields[k]==='string'&&e.letterFields[k].trim()) f[k]=e.letterFields[k].trim().slice(0,120);});if(Object.keys(f).length) state.fields[id]=f;}
+  });
+  return {added:added,replaced:replaced};
+}
+$('import-file').addEventListener('change',function(){
+  var file=this.files&&this.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    var data; try{data=JSON.parse(reader.result);}catch(e){toast('That file isn’t a resume library. Choose the .json file you exported.');return;}
+    flushEdit();
+    var res=importLibrary(data), n=res.added+res.replaced;
+    changed(); render();
+    toast(n?('Imported '+n+' resume'+(n>1?'s':'')+(res.replaced?' ('+res.replaced+' updated)':'')+'. Click Save changes to keep them.'):'Imported the templates and lists. No resumes were in that file.');
+  };
+  reader.onerror=function(){toast('Couldn’t read that file. Try again.');};
+  reader.readAsText(file);
+});
+
+window.addEventListener('resize',function(){measure();});
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measure);
+
+render();
+if(restored){toast('Restored your unsaved edits from this browser.');}
+})();
+</script>
+
+</body></html>
